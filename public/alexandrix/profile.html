@@ -22,7 +22,6 @@
       <a href="./index.html#destaques">Destaques</a>
       <a href="./index.html#generos">Gêneros</a>
       <a href="./index.html#sobre">Sobre</a>
-      <a href="./profile.html" class="active">Perfil</a>
     </nav>
     <a href="./index.html" class="cta-ghost">← Voltar</a>
   </header>
@@ -47,8 +46,10 @@
         <div class="identity-text">
           <h1 id="profileName">Viajante Cósmico</h1>
           <p class="profile-handle" id="profileHandle">@leitor.estelar</p>
+          <p class="profile-handle" id="profileEmail"></p>
           <p class="profile-bio" id="profileBio">Explorador de constelações literárias. Apaixonado por clássicos, ficção científica e poesia.</p>
           <button class="btn-primary" id="editProfileBtn">Editar perfil</button>
+          <button class="btn-secondary" id="logoutBtn">Sair da conta</button>
         </div>
       </div>
 
@@ -167,6 +168,7 @@
   </div>
 
   <!-- books catalog is needed to render shelf/fav -->
+  <script src="./session.js"></script>
   <script src="./books.js"></script>
   <script src="./profile.js"></script>
   <script src="./nav-drag.js"></script>

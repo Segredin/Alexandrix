@@ -27,11 +27,19 @@ function renderGenres() {
   }));
 }
 
-function bookCardHTML(b) {
+function coverHTML(b, cls = "book-cover") {
   const grad = `linear-gradient(160deg, ${b.color[0]}, ${b.color[1]})`;
+  const img = b.cover
+    ? `<img src="${b.cover}" alt="Capa de ${b.title}" loading="lazy" onerror="this.remove()">`
+    : "";
+  return `<div class="${cls}" style="background:${grad}">${img}<span>${b.title}</span></div>`;
+}
+window.coverHTML = coverHTML;
+
+function bookCardHTML(b) {
   return `
     <article class="book-card" data-id="${b.id}">
-      <div class="book-cover" style="background:${grad}"><span>${b.title}</span></div>
+      ${coverHTML(b)}
       <div class="book-meta">
         <div class="title">${b.title}</div>
         <div class="author">${b.author}</div>
@@ -40,7 +48,7 @@ function bookCardHTML(b) {
 }
 
 function renderFeatured() {
-  const picks = [books[6], books[7], books[3], books[1]];
+  const picks = [books[0], books[12], books[27], books[28]].filter(Boolean);
   featuredGrid.innerHTML = picks.map(b => `
     <div class="featured-card" data-id="${b.id}">
       <span class="author">${b.genre} · ${b.year}</span>
@@ -110,9 +118,7 @@ function handleBookAction(action, id) {
   else if (action === 'fav') { toggle(FAV_KEY, id); openBook(id); }
   else if (action === 'read') {
     localStorage.setItem(READING_KEY, String(id));
-    const mins = +(localStorage.getItem(READ_KEY) || 0) + 5;
-    localStorage.setItem(READ_KEY, String(mins));
-    window.location.href = './profile.html';
+    window.location.href = './reader.html?id=' + id;
   }
 }
 function closeModal() { modal.setAttribute("aria-hidden", "true"); }
@@ -150,7 +156,8 @@ document.addEventListener("DOMContentLoaded", () => {
 // ===== User Profile =====
 // Reflect saved avatar/initial in navbar + open profile page
 (function navUser(){
-  const user = (() => { try { return JSON.parse(localStorage.getItem('alexandrix_user') || '{}'); } catch { return {}; } })();
+  const UKEY = window.AX ? AX.key('alexandrix_user') : 'alexandrix_user';
+  const user = (() => { try { return JSON.parse(localStorage.getItem(UKEY) || '{}'); } catch { return {}; } })();
   const avatar = document.getElementById('navAvatar');
   if (avatar) {
     if (user.photo) {
@@ -161,7 +168,7 @@ document.addEventListener("DOMContentLoaded", () => {
     }
   }
   document.getElementById('openUser')?.addEventListener('click', () => {
-    window.location.href = './profile.html';
+    window.location.href = (window.AX && !AX.session()) ? './auth.html?next=profile' : './profile.html';
   });
 
   // Reflete sessão no link "Entrar / Sair"
@@ -174,8 +181,8 @@ document.addEventListener("DOMContentLoaded", () => {
       authLink.addEventListener('click', (e) => {
         e.preventDefault();
         if (confirm('Deseja sair da sua conta?')) {
-          localStorage.removeItem('alexandrix_session');
-          window.location.reload();
+          if (window.AX) AX.logout('./auth.html?stay=1');
+          else { localStorage.removeItem('alexandrix_session'); window.location.reload(); }
         }
       });
     } else {

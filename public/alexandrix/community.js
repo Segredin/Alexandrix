@@ -11,7 +11,7 @@
 
   // Avatar nav
   try {
-    const user = JSON.parse(localStorage.getItem('alexandrix_user') || '{}');
+    const user = JSON.parse(localStorage.getItem(window.AX ? AX.key('alexandrix_user') : 'alexandrix_user') || '{}');
     const avatar = document.getElementById('navAvatar');
     if (avatar) {
       if (user.photo) { avatar.textContent = ''; avatar.style.background = `url(${user.photo}) center/cover`; }
@@ -122,9 +122,10 @@
       }
       saveAll(all);
       try {
-        const mine = JSON.parse(localStorage.getItem('alexandrix_my_books') || '[]');
+        const MY = window.AX ? AX.key('alexandrix_my_books') : 'alexandrix_my_books';
+        const mine = JSON.parse(localStorage.getItem(MY) || '[]');
         mine.unshift(payload.id);
-        localStorage.setItem('alexandrix_my_books', JSON.stringify(mine));
+        localStorage.setItem(MY, JSON.stringify(mine));
       } catch {}
       render();
     }, 700);

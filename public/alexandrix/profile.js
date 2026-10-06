@@ -2,15 +2,19 @@
 const $ = (s, el=document) => el.querySelector(s);
 const $$ = (s, el=document) => Array.from(el.querySelectorAll(s));
 
+// Exige conta: perfil é sempre de um usuário cadastrado
+if (window.AX && !AX.requireAuth()) throw new Error('sem sessão');
+
+const K = (b) => (window.AX ? AX.key(b) : b);
 const KEYS = {
-  user: 'alexandrix_user',
-  shelf: 'alexandrix_shelf',
-  fav: 'alexandrix_favorites',
-  read: 'alexandrix_reading_minutes',
-  reading: 'alexandrix_currently_reading',
-  activity: 'alexandrix_activity', // { 'YYYY-MM-DD': minutes }
-  prefs: 'alexandrix_prefs',
-  finished: 'alexandrix_finished'
+  user: K('alexandrix_user'),
+  shelf: K('alexandrix_shelf'),
+  fav: K('alexandrix_favorites'),
+  read: K('alexandrix_reading_minutes'),
+  reading: K('alexandrix_currently_reading'),
+  activity: K('alexandrix_activity'), // { 'YYYY-MM-DD': minutes }
+  prefs: K('alexandrix_prefs'),
+  finished: K('alexandrix_finished')
 };
 
 const defaults = {
@@ -34,6 +38,8 @@ function renderIdentity() {
   $('#profileName').textContent = user.name;
   $('#profileHandle').textContent = user.handle.startsWith('@') ? user.handle : '@' + user.handle;
   $('#profileBio').textContent = user.bio;
+  const em = document.getElementById('profileEmail');
+  if (em) { const ses = window.AX && AX.session(); em.textContent = ses ? ses.email : ''; }
   const avatar = $('#profileAvatar');
   if (user.photo) {
     avatar.textContent = '';
@@ -278,7 +284,7 @@ function renderMyBooks() {
   if (!wrap) return;
   let mineIds = [];
   let all = [];
-  try { mineIds = JSON.parse(localStorage.getItem('alexandrix_my_books') || '[]'); } catch {}
+  try { mineIds = JSON.parse(localStorage.getItem(K('alexandrix_my_books')) || '[]'); } catch {}
   try { all = JSON.parse(localStorage.getItem('alexandrix_community') || '[]'); } catch {}
   const mine = all.filter(p => mineIds.includes(p.id));
   if (!mine.length) {
@@ -316,3 +322,9 @@ function renderAll() {
 renderAll();
 renderPrefs();
 $('#year').textContent = new Date().getFullYear();
+
+/* ===== Sair da conta ===== */
+document.getElementById('logoutBtn')?.addEventListener('click', () => {
+  if (!confirm('Deseja sair da sua conta?')) return;
+  AX.logout('./auth.html?stay=1');
+});

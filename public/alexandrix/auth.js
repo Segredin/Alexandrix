@@ -116,23 +116,29 @@ async function login(email, pass, msg) {
   if (hash !== user.hash) return showMsg(msg, 'Email ou senha incorretos.', 'error');
 
   // Sessão
-  localStorage.setItem(SESSION_KEY, JSON.stringify({ userId: user.id, email: user.email, loggedAt: Date.now() }));
-  // Perfil (integra com o resto do site)
-  const existing = (() => { try { return JSON.parse(localStorage.getItem(USER_KEY) || '{}'); } catch { return {}; } })();
+  localStorage.setItem(SESSION_KEY, JSON.stringify({ userId: user.id, email: user.email, name: user.name, loggedAt: Date.now() }));
+
+  // Perfil isolado por conta (cada email tem seu próprio perfil salvo)
+  const profileKey = `${USER_KEY}::${user.id}`;
+  const existing = (() => { try { return JSON.parse(localStorage.getItem(profileKey) || '{}'); } catch { return {}; } })();
   const profile = {
     ...existing,
+    email: user.email,
     name: existing.name || user.name,
     handle: existing.handle || '@' + user.email.split('@')[0],
     initial: (existing.initial || user.name[0] || 'A').toUpperCase(),
   };
-  localStorage.setItem(USER_KEY, JSON.stringify(profile));
+  localStorage.setItem(profileKey, JSON.stringify(profile));
 
   showMsg(msg, '✓ Entrando...', 'ok');
-  setTimeout(() => { window.location.href = './index.html'; }, 500);
+  const next = new URLSearchParams(location.search).get('next');
+  setTimeout(() => { window.location.href = next === 'profile' ? './profile.html' : './index.html'; }, 500);
 }
 
 // Se já logado, redireciona
 if (localStorage.getItem(SESSION_KEY)) {
   const params = new URLSearchParams(location.search);
-  if (!params.has('stay')) window.location.replace('./index.html');
+  if (!params.has('stay')) {
+    window.location.replace(params.get('next') === 'profile' ? './profile.html' : './index.html');
+  }
 }

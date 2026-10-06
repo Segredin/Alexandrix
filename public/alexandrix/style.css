@@ -47,7 +47,7 @@ body {
   color: var(--text);
   background:
     radial-gradient(ellipse at top, rgba(20, 40, 100, 0.45), transparent 60%),
-    url('/__l5e/assets-v1/a337a44d-c49f-43fa-9a41-86c9b5409cb0/bg.jpeg') center top / cover no-repeat fixed,
+    url('./img/fundo\ alexandrix\ teste.webp') center top / cover no-repeat fixed,
     #03050f;
   min-height: 100vh;
   line-height: 1.6;
@@ -637,3 +637,17 @@ section { padding: var(--section-pad-y) var(--page-pad-x); max-width: var(--page
   .site-nav { display: flex; gap: var(--space-4); }
   .site-header { flex-wrap: nowrap; }
 }
+
+/* ===== Leitor ===== */
+.reader-page{max-width:var(--page-max);margin:0 auto;padding:var(--section-pad-y) var(--page-pad-x);}
+.reader-head{display:flex;flex-wrap:wrap;gap:var(--space-4);align-items:flex-end;justify-content:space-between;margin-bottom:var(--space-4);}
+.reader-head h1{font-size:clamp(22px,3vw,34px);margin:0 0 6px;}
+.reader-tools{display:flex;gap:var(--space-2);flex-wrap:wrap;align-items:center;}
+.reader-progress{height:4px;border-radius:99px;background:rgba(255,255,255,.08);overflow:hidden;margin-bottom:var(--space-5);}
+.reader-progress-fill{height:100%;width:0;background:linear-gradient(90deg,#c9a24a,#8f6bd6);transition:width .3s ease;}
+.reader-surface{background:rgba(255,255,255,.03);border:1px solid rgba(255,255,255,.08);border-radius:18px;padding:clamp(20px,4vw,56px);line-height:1.85;font-size:18px;max-width:74ch;margin:0 auto;}
+.reader-surface p{margin:0 0 1.1em;text-align:justify;hyphens:auto;}
+.reader-nav{display:flex;align-items:center;justify-content:center;gap:var(--space-4);margin-top:var(--space-5);flex-wrap:wrap;}
+.reader-nav button[disabled]{opacity:.4;cursor:not-allowed;}
+.reader-source{text-align:center;margin-top:var(--space-4);font-size:13px;}
+.reader-unavailable{text-align:center;display:grid;gap:12px;justify-items:center;}
